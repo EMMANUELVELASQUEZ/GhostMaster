@@ -1,7 +1,8 @@
 # GhostMaster
 Sitio web de venta de boletos con una nueva implementacion de innovacion gracias a su nuevo modelo de juegos.
 <h1 align="center">🚌💥 VERABUS: La Nueva Era del Transporte en Veracruz 🎮🔥</h1>
-
+![ChatGPT Image 16 may 2025, 10_43_11](https://github.com/user-attachments/assets/76b72145-382c-48ec-bb8d-fa3ccfbd146d)
+![ChatGPT Image 16 may 2025, 10_43_11](https://github.com/user-attachments/assets/76b72145-382c-48ec-bb8d-fa3ccfbd146d)
 <p align="center">
   Plataforma web + juego interactivo = 🚀 viajes con estilo + 🎁 recompensas reales
 </p>
