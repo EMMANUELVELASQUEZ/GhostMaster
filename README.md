@@ -23,6 +23,11 @@ Consulta rutas, compra boletos, elige tu asiento… y de paso, **juega para gana
 🎮 **Recompensas**: tokens, boletos gratis, descuentos  
 🚍 **Objetivo**: Transformar la experiencia de viajar
 
+🚀 Moderniza el transporte con estilo
+🎮 Hace que viajar sea divertido
+💰 Recompensa a los que usan la plataforma
+📈 Fideliza sin trucos baratos
+
 ---
 
 ## 🧨 Funcionalidades Nivel Dios
@@ -46,3 +51,34 @@ verabus.history.display({
   user: "tú",
   transactions: "viajes pasados"
 });
+
+
+
+
+// 🎮 Juego Integrado
+let tokens = verabus.game.collectItems();
+let premios = verabus.rewards.redeem(tokens);
+console.log(`Has ganado: ${premios}`);
+
+
+
+Frontend:
+  - HTML5 / CSS3 / JavaScript
+  - UI responsiva con diseño de alto impacto
+
+Rutas y Mapas:
+  - APIs de geolocalización
+  - Render dinámico con markers y animaciones
+
+Simulación de Asientos:
+  - Vista gráfica del autobús
+  - Selección en tiempo real
+
+Gameplay:
+  - Motor JS para recolecta de tokens
+  - Almacenamiento local y conexión con sistema de premios
+
+Backend (en progreso):
+  - Login / Registro de usuarios
+  - Validación de boletos y tokens
+  - Base de datos robusta
