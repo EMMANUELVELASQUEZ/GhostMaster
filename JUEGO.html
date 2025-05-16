@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>X y O con Tienda</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #0f0;
+    }
+
+    #tablero {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .celda {
+      background: #333;
+      border: 2px solid #0f0;
+      font-size: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    #info, #mensaje {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    #boletitos {
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .ticket {
+      background: linear-gradient(45deg, #ff0, #fa0);
+      padding: 5px 10px;
+      border-radius: 12px;
+      color: #111;
+      font-weight: bold;
+      box-shadow: 0 0 5px #ff0;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .tienda {
+      margin-top: 40px;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .producto {
+      background: #333;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 5px #0f0;
+    }
+
+    .producto button {
+      margin-top: 10px;
+      background: #0f0;
+      color: #000;
+      border: none;
+    }
+
+    .agotado {
+      background: #444 !important;
+      color: #aaa !important;
+      cursor: not-allowed;
+    }
+
+    /* 🔥 BOTÓN PERRÓN 🔥 */
+    .boton-perron {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #ff00cc, #3333ff);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 15px;
+      box-shadow: 0 0 15px #ff00cc;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .boton-perron:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #ff00cc, 0 0 10px #3333ff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Juego de X y O</h1>
+  <div id="tablero"></div>
+
+  <div id="info">Turno: <span id="turno">X</span></div>
+  <div id="mensaje"></div>
+
+  <h3>🎟️ Boletitos Ganados:</h3>
+  <div id="boletitos"></div>
+
+  <button onclick="reiniciarJuego()">Reiniciar</button>
+
+  <!-- 🛒 Tienda -->
+  <div class="tienda">
+    <h2>🛒 Tienda</h2>
+    <div id="productos"></div>
+  </div>
+
+  <!-- 🚀 BOTÓN PERRÓN -->
+  <a href="file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/precios.html" target="_blank" class="boton-perron">🚀 BOLETOS</a>
+
+  <script>
+    const tablero = document.getElementById("tablero");
+    const turnoSpan = document.getElementById("turno");
+    const mensaje = document.getElementById("mensaje");
+    const boletitos = document.getElementById("boletitos");
+    const productosDiv = document.getElementById("productos");
+
+    let celdas = [];
+    let turno = "X";
+    let juegoActivo = true;
+    let boletitoCount = 0;
+
+    const listaProductos = [
+      { nombre: "Agua de 1l", id: "Agua" },
+      { nombre: "Sabritas", id: "Sabritas" },
+      { nombre: "Galletas", id: "Galletas" },
+      { nombre: "refresco 350", id: "refresco" },
+      { nombre: "Chicles", id: "cicles" },
+      { nombre: "🎫 Boleto a Donde Quieras", id: "boleto" }
+    ];
+
+    function crearTablero() {
+      tablero.innerHTML = "";
+      celdas = [];
+      for (let i = 0; i < 9; i++) {
+        const celda = document.createElement("div");
+        celda.classList.add("celda");
+        celda.dataset.index = i;
+        celda.addEventListener("click", () => marcarCelda(i));
+        tablero.appendChild(celda);
+        celdas.push(celda);
+      }
+    }
+
+    function marcarCelda(index) {
+      if (!juegoActivo || celdas[index].textContent !== "") return;
+
+      celdas[index].textContent = turno;
+      if (revisarGanador()) {
+        mensaje.textContent = `¡Ganó ${turno}! 🎉`;
+        agregarBoletito();
+        juegoActivo = false;
+      } else if (celdas.every(c => c.textContent !== "")) {
+        mensaje.textContent = "¡Empate!";
+        juegoActivo = false;
+      } else {
+        turno = turno === "X" ? "O" : "X";
+        turnoSpan.textContent = turno;
+      }
+    }
+
+    const ganadores = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+
+    function revisarGanador() {
+      return ganadores.some(([a, b, c]) => {
+        return celdas[a].textContent &&
+               celdas[a].textContent === celdas[b].textContent &&
+               celdas[a].textContent === celdas[c].textContent;
+      });
+    }
+
+    function agregarBoletito() {
+      const ticket = document.createElement("div");
+      ticket.classList.add("ticket");
+      ticket.textContent = "🎟️";
+      boletitos.appendChild(ticket);
+      boletitoCount++;
+    }
+
+    function reiniciarJuego() {
+      crearTablero();
+      turno = "X";
+      turnoSpan.textContent = turno;
+      mensaje.textContent = "";
+      juegoActivo = true;
+    }
+
+    function crearTienda() {
+      listaProductos.forEach(prod => {
+        const div = document.createElement("div");
+        div.classList.add("producto");
+        div.innerHTML = `
+          <strong>${prod.nombre}</strong><br>
+          <button onclick="comprarProducto(this)" data-id="${prod.id}">Comprar 🎟️ x1</button>
+        `;
+        productosDiv.appendChild(div);
+      });
+    }
+
+    function comprarProducto(btn) {
+      if (boletitoCount <= 0) {
+        alert("¡No tienes boletitos suficientes!");
+        return;
+      }
+
+      btn.classList.add("agotado");
+      btn.textContent = "Comprado ✅";
+      btn.disabled = true;
+      boletitos.removeChild(boletitos.lastChild);
+      boletitoCount--;
+    }
+
+    crearTablero();
+    crearTienda();
+  </script>
+
+</body>
+</html>
+
+

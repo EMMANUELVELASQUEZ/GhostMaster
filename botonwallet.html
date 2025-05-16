@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Botón Movible de Cartera</title>
+<style>
+  body {
+    height: 100vh;
+    margin: 0;
+    position: relative;
+    font-family: Arial, sans-serif;
+  }
+  /* Botón cartera */
+  #walletBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #f39c12, #d35400);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: grab;
+    box-shadow: 0 6px 15px rgba(243, 156, 18, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: box-shadow 0.3s ease;
+    z-index: 9999;
+    user-select: none;
+  }
+  #walletBtn:active {
+    cursor: grabbing;
+    box-shadow: 0 12px 25px rgba(243, 156, 18, 0.8);
+  }
+  /* Ícono cartera (usando SVG inline para mejor control) */
+  #walletBtn svg {
+    fill: white;
+    width: 28px;
+    height: 28px;
+  }
+</style>
+</head>
+<body>
+
+<a href="#walletSection" id="walletBtn" title="Ir a mi Wallet">
+  <!-- Ícono de cartera -->
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M21 7H3a2 2 0 00-2 2v6a2 2 0 002 2h18a2 2 0 002-2v-6a2 2 0 00-2-2zm-1 7h-3v-4h3v4zM3 9h15v2H3V9z"/>
+  </svg>
+</a>
+
+<!-- Ejemplo sección wallet -->
+<section id="walletSection" style="margin-top: 150vh; padding: 20px; font-size: 24px;">
+  Aquí está tu Wallet (simulación de sección)
+</section>
+
+<script>
+  const btn = document.getElementById('walletBtn');
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  btn.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    // Calcular offset para que el botón no "salte"
+    offsetX = e.clientX - btn.getBoundingClientRect().left;
+    offsetY = e.clientY - btn.getBoundingClientRect().top;
+    btn.style.transition = 'none'; // quitar transición mientras arrastras
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      btn.style.transition = 'box-shadow 0.3s ease';
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+
+      // Limitar que el botón no se salga de la pantalla
+      const maxX = window.innerWidth - btn.offsetWidth;
+      const maxY = window.innerHeight - btn.offsetHeight;
+
+      if (x < 0) x = 0;
+      if (y < 0) y = 0;
+      if (x > maxX) x = maxX;
+      if (y > maxY) y = maxY;
+
+      btn.style.left = x + 'px';
+      btn.style.top = y + 'px';
+      btn.style.right = 'auto';
+      btn.style.bottom = 'auto';
+    }
+  });
+
+  // Opcional: para que toque o click corto no arrastre y sí abra el href
+  btn.addEventListener('click', (e) => {
+    if (isDragging) {
+      e.preventDefault(); // si estabas arrastrando no activar link
+    }
+  });
+</script>
+
+</body>
+</html>

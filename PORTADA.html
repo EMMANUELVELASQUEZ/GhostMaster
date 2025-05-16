@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Botón Wallet a Enlace Local</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    #walletBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #f39c12, #d35400);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(243, 156, 18, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      user-select: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    #walletBtn:hover {
+      box-shadow: 0 12px 25px rgba(243, 156, 18, 0.8);
+    }
+
+    #walletBtn svg {
+      fill: white;
+      width: 28px;
+      height: 28px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Botón flotante -->
+<button id="walletBtn" title="Ir a mi sitio MasterBus">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M21 7H3a2 2 0 00-2 2v6a2 2 0 002 2h18a2 2 0 002-2v-6a2 2 0 00-2-2zm-1 7h-3v-4h3v4zM3 9h15v2H3V9z"/>
+  </svg>
+</button>
+
+<script>
+  document.getElementById('walletBtn').addEventListener('click', function() {
+    const fileUrl = 'file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/masterbus.html';
+    window.open(fileUrl, '_blank');
+  });
+</script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>RUTAS GHOSMASTER</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #111);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .contenedor {
+      text-align: center;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 48px;
+      color: #00ffcc;
+      margin-bottom: 30px;
+      text-shadow: 0 0 15px #00ffcc;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .boton {
+      background: linear-gradient(45deg, #ff00cc, #3333ff);
+      padding: 15px 25px;
+      font-size: 20px;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0 10px #ff00cc;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .boton:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #00ffcc;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor">
+    <h1>🎫 Bienvenido al Sistema de Rutas GHOSTMASTER</h1>
+    <div class="menu">
+      <a href="file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/PAGINA%20WEB%20DE%20RUTAS/RUTAS.html" class="boton">🗺️ Ver Mapa de Rutas</a>
+      <a href="file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/precios.html" class="boton">🎟️ Comprar Boletos</a>
+      <a href="file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/ASIENTOS.html" class="boton">💺 Ver Asientos Disponibles</a>
+      <a href="file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/JUEGO.html" class="boton">📄Juego para ganar viaje o productos</a>
+    </div>
+</body>
+</html>

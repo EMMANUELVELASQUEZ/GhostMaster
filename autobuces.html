@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Autobuses 3D con Interfaz y GIF</title>
+  <style>
+    body {
+      margin: 0;
+      background: #e0f7fa;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: #00796b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    #main-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 30px;
+      padding: 30px;
+    }
+
+    #viewer {
+      width: 700px;
+      height: 400px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+    #gif-container {
+      width: 300px;
+      height: 300px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #gif-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    #controls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+  </style>
+</head>
+<body>
+
+<header>🚍 Selector de Autobuses 3D + GIF</header>
+
+<div id="main-container">
+  <div id="viewer"></div>
+  <div id="gif-container">
+    <img src="escolar.jpeg" alt="GIF decorativo">
+    <!-- Cambia esta URL por el GIF que tú quieras -->
+  </div>
+</div>
+
+<div id="controls">
+  <button id="changeBus">Cambiar Autobús</button>
+</div>
+
+<!-- THREE.JS -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+let scene, camera, renderer, controls;
+let busGroup;
+let busIndex = 0;
+const busStyles = ['classic', 'modern', 'school'];
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xcceeff);
+
+  camera = new THREE.PerspectiveCamera(60, 700/400, 0.1, 1000);
+  camera.position.set(8, 4, 10);
+
+  renderer = new THREE.WebGLRenderer({antialias: true});
+  renderer.setSize(700, 400);
+  document.getElementById('viewer').appendChild(renderer.domElement);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 1.5, 0);
+  controls.update();
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+  const directional = new THREE.DirectionalLight(0xffffff, 1);
+  directional.position.set(5, 10, 7);
+  scene.add(ambient, directional);
+
+  createBus(busStyles[busIndex]);
+  animate();
+}
+
+function createBus(style) {
+  if (busGroup) {
+    scene.remove(busGroup);
+    busGroup.traverse(obj => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) obj.material.dispose();
+    });
+  }
+
+  const colors = {
+    classic: {body: 0xd32f2f, window: 0x90caf9, wheel: 0x212121},
+    modern: {body: 0x1565c0, window: 0x82b1ff, wheel: 0x000000},
+    school: {body: 0xfbc02d, window: 0xfff59d, wheel: 0x3e2723}
+  };
+  const c = colors[style];
+
+  busGroup = new THREE.Group();
+
+  const body = new THREE.Mesh(
+    new THREE.BoxGeometry(6, 2, 2),
+    new THREE.MeshPhongMaterial({color: c.body})
+  );
+  body.position.y = 1.5;
+  busGroup.add(body);
+
+  const winGeom = new THREE.BoxGeometry(1, 1, 0.05);
+  const winMat = new THREE.MeshPhongMaterial({color: c.window, transparent: true, opacity: 0.7});
+  for (let i = 0; i < 5; i++) {
+    let win = new THREE.Mesh(winGeom, winMat);
+    win.position.set(-2 + i * 1.2, 1.9, 1.03);
+    busGroup.add(win);
+  }
+
+  const wheelGeom = new THREE.CylinderGeometry(0.6, 0.6, 0.4, 32);
+  const wheelMat = new THREE.MeshPhongMaterial({color: c.wheel});
+  const positions = [
+    [-2.2, 0.6, 1.15], [2.2, 0.6, 1.15],
+    [-2.2, 0.6, -1.15], [2.2, 0.6, -1.15]
+  ];
+  positions.forEach(pos => {
+    let wheel = new THREE.Mesh(wheelGeom, wheelMat);
+    wheel.rotation.z = Math.PI / 2;
+    wheel.position.set(...pos);
+    busGroup.add(wheel);
+  });
+
+  scene.add(busGroup);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+document.getElementById('changeBus').addEventListener('click', () => {
+  busIndex = (busIndex + 1) % busStyles.length;
+  createBus(busStyles[busIndex]);
+});
+
+init();
+</script>
+
+</body>
+</html>
+
+
+

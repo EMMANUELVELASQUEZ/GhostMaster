@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Boletos Veracruz</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: black;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: linear-gradient(135deg, green, #00eaff);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
+    }
+
+    .bus {
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info {
+      flex: 1;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    select {
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .total {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 8px 15px;
+      background-color: #28a745;
+      border: none;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: red;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #ddd;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Compra tus boletos - Veracruz</h1>
+    <p>Precios accesibles, VIAJA FELIZ Y SIN PREOCUÁCIONES!!</p>
+  </header>
+
+  <div class="container" id="bus-list"></div>
+
+  <footer>
+    &copy; 2025 Boletos Veracruz. Todos los derechos reservados Emaster.
+  </footer>
+
+  <script>
+    const buses = [
+      { destino: 'Xalapa - Veracruz', precio: 280 },
+      { destino: 'Coatzacoalcos - Veracruz', precio: 370 },
+      { destino: 'Orizaba - Veracruz', precio: 320 },
+      { destino: 'Poza Rica - Veracruz', precio: 390 },
+      { destino: 'Tuxpan - Veracruz', precio: 360 },
+      { destino: 'Papantla - Veracruz', precio: 340 },
+      { destino: 'Minatitlán - Veracruz', precio: 350 }
+    ];
+
+    const busList = document.getElementById('bus-list');
+
+    buses.forEach((bus, index) => {
+      const busDiv = document.createElement('div');
+      busDiv.className = 'bus';
+
+      busDiv.innerHTML = `
+        <div class="info">
+          <h3>${bus.destino}</h3>
+          <p class="price">$${bus.precio} MXN</p>
+          <label for="qty-${index}">Asientos: </label>
+          <select id="qty-${index}" onchange="updateTotal(${index}, ${bus.precio})">
+            ${[...Array(11).keys()].map(i => `<option value="${i}">${i}</option>`).join('')}
+          </select>
+          <p class="total" id="total-${index}">Total: $0</p>
+          <button onclick="comprar(${index})">Comprar</button>
+        </div>
+      `;
+
+      busList.appendChild(busDiv);
+    });
+
+    function updateTotal(index, precio) {
+      const qty = document.getElementById(`qty-${index}`).value;
+      const total = precio * qty;
+      document.getElementById(`total-${index}`).innerText = `Total: $${total}`;
+    }
+
+    function comprar(index) {
+      const qty = parseInt(document.getElementById(`qty-${index}`).value);
+      if (qty === 0) {
+        alert("Selecciona al menos un asiento.");
+        return;
+      }
+
+      const bus = buses[index];
+      const total = qty * bus.precio;
+      const autobusId = Math.floor(Math.random() * 900 + 100);
+      let asientos = [];
+
+      while (asientos.length < qty) {
+        const asiento = Math.floor(Math.random() * 40 + 1);
+        if (!asientos.includes(asiento)) {
+          asientos.push(asiento);
+        }
+      }
+
+      const ticketWindow = window.open('', '_blank', 'width=600,height=600');
+      ticketWindow.document.write(`
+        <html>
+        <head>
+          <title>Tu Ticket</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', sans-serif;
+              background-color: #fff9e6;
+              padding: 40px;
+            }
+            .ticket {
+              border: 2px dashed #ffc107;
+              padding: 20px;
+              border-radius: 10px;
+              background-color: #fff;
+            }
+            h2 {
+              color: #d35400;
+            }
+            p {
+              font-size: 18px;
+              line-height: 1.6;
+            }
+            .print-btn {
+              margin-top: 20px;
+              padding: 10px 15px;
+              background-color: #007bff;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="ticket">
+            <h2>🎫 Boleto de Viaje</h2>
+            <p><strong>Ruta:</strong> ${bus.destino}</p>
+            <p><strong>Autobús #:</strong> ${autobusId}</p>
+            <p><strong>Asientos:</strong> ${asientos.join(', ')}</p>
+            <p><strong>Total Pagado:</strong> $${total} MXN</p>
+            <p><strong>Fecha:</strong> ${new Date().toLocaleDateString()}</p>
+            <p>Gracias por su compra. ¡Buen viaje!</p>
+            <button class="print-btn" onclick="window.print()">🖨️ Imprimir Ticket</button>
+          </div>
+        </body>
+        </html>
+      `);
+
+      ticketWindow.document.close();
+    }
+  </script>
+</body>
+</html>
+

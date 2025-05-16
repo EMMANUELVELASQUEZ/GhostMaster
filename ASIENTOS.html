@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Compra de Asientos - Autobús</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(#0a0a0a, #1c1c1c);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin: 20px;
+      color: #00ffc3;
+      text-shadow: 0 0 5px #00ffc3;
+    }
+
+    .bus-container {
+      width: 360px;
+      background: #2c2c2c;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 30px rgba(0, 255, 195, 0.4);
+      position: relative;
+    }
+
+    .driver-area {
+      background: #1a1a1a;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      text-align: center;
+      font-weight: bold;
+      color: #ffcc00;
+    }
+
+    .window {
+      background: #0e0e0e;
+      border: 2px solid #00ffc3;
+      border-radius: 10px;
+      height: 50px;
+      margin-bottom: 10px;
+      text-align: center;
+      line-height: 50px;
+      color: #00ffc3;
+    }
+
+    .seat-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .seat {
+      width: 50px;
+      height: 50px;
+      background: #444;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      color: #ccc;
+    }
+
+    .seat:hover {
+      background: #555;
+    }
+
+    .seat.selected {
+      background: #00ffc3;
+      color: #000;
+    }
+
+    .seat.occupied {
+      background: #ff4d4d;
+      color: #000;
+      cursor: not-allowed;
+    }
+
+    .aisle {
+      width: 30px;
+    }
+
+    .legend {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .legend div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .box {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+    }
+
+    .available { background: #444; }
+    .selected { background: #00ffc3; }
+    .occupied { background: #ff4d4d; }
+
+    .purchase-summary {
+      margin-top: 20px;
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      width: 100%;
+    }
+
+    button {
+      background: #00ffc3;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+
+    button:disabled {
+      background: #777;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background: #00e6af;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>🚍 Elige tu asiento</h1>
+
+  <div class="bus-container">
+    <div class="driver-area">Conductor 🧑‍✈️</div>
+    <div class="window">Parabrisas</div>
+
+    <!-- Asientos -->
+    <div class="seat-row"><div class="seat" data-seat="1">1</div><div class="aisle"></div><div class="seat" data-seat="2">2</div></div>
+    <div class="seat-row"><div class="seat" data-seat="3">3</div><div class="aisle"></div><div class="seat" data-seat="4">4</div></div>
+    <div class="seat-row"><div class="seat" data-seat="5">5</div><div class="aisle"></div><div class="seat" data-seat="6">6</div></div>
+    <div class="seat-row"><div class="seat" data-seat="7">7</div><div class="aisle"></div><div class="seat" data-seat="8">8</div></div>
+    <div class="seat-row"><div class="seat" data-seat="9">9</div><div class="aisle"></div><div class="seat" data-seat="10">10</div></div>
+    <div class="seat-row"><div class="seat" data-seat="11">11</div><div class="aisle"></div><div class="seat" data-seat="12">12</div></div>
+  </div>
+
+  <div class="legend">
+    <div><div class="box available"></div> Disponible</div>
+    <div><div class="box selected"></div> Seleccionado</div>
+    <div><div class="box occupied"></div> Ocupado</div>
+  </div>
+
+  <div class="purchase-summary">
+    <p>Asientos seleccionados: <span id="selected-seats">0</span></p>
+    <p>Total: $<span id="total-price">0</span> MXN</p>
+    <button id="buy-button" disabled>Comprar Asiento(s)</button>
+  </div>
+
+  <script>
+    const seats = document.querySelectorAll('.seat');
+    const occupied = [4, 7, 10];
+    const seatPrice = 120;
+    const selectedSeatsText = document.getElementById('selected-seats');
+    const totalPriceText = document.getElementById('total-price');
+    const buyButton = document.getElementById('buy-button');
+
+    seats.forEach(seat => {
+      const num = parseInt(seat.dataset.seat);
+      if (occupied.includes(num)) {
+        seat.classList.add('occupied');
+      }
+
+      seat.addEventListener('click', () => {
+        if (!seat.classList.contains('occupied')) {
+          seat.classList.toggle('selected');
+          updateSummary();
+        }
+      });
+    });
+
+    function updateSummary() {
+      const selectedSeats = document.querySelectorAll('.seat.selected');
+      const total = selectedSeats.length * seatPrice;
+      selectedSeatsText.textContent = selectedSeats.length;
+      totalPriceText.textContent = total;
+      buyButton.disabled = selectedSeats.length === 0;
+    }
+
+    buyButton.addEventListener('click', () => {
+      const selected = [...document.querySelectorAll('.seat.selected')];
+      const seatsBought = selected.map(s => s.dataset.seat);
+      alert(`Has comprado los asientos: ${seatsBought.join(', ')}\n¡Gracias por tu compra!`);
+      selected.forEach(seat => {
+        seat.classList.remove('selected');
+        seat.classList.add('occupied');
+      });
+      updateSummary();
+    });
+  </script>
+
+<!-- Botón fijo en el lado derecho, verticalmente centrado -->
+<button 
+  onclick="window.location.href='file:///Users/emmanuelvelasquez/Desktop/Semestre%204%20TIOR/precios.html'" 
+  style="
+    position: fixed;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: linear-gradient(to right, #ff00cc, #3333ff);
+    color: white;
+    font-size: 18px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(255, 0, 204, 0.5);
+    cursor: pointer;
+    z-index: 9999;
+  ">
+  🚀 Boletos
+</button>
+
+
+

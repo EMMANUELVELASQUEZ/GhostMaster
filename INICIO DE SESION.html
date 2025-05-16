@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GhostMaster | Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+    }
+    body {
+      background: #0c0c0c;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background: #1a1a1a;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 30px #00ffe5;
+      width: 350px;
+      text-align: center;
+    }
+    .logo {
+      width: 100px;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #00ffe5;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 0.5rem;
+      background: #2a2a2a;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      background: #00ffe5;
+      color: #0c0c0c;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #00c4b1;
+    }
+    .toggle {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    .error {
+      color: red;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="GHOST.png" alt="GhostMaster Logo" class="logo">
+    <h1 id="form-title">Iniciar Sesión</h1>
+
+    <!-- Formulario de login -->
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Correo electrónico" required>
+      <input type="password" id="login-password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+      <p class="error" id="login-error"></p>
+    </form>
+
+    <!-- Formulario de registro -->
+    <form id="register-form" class="hidden">
+      <input type="text" id="register-name" placeholder="Nombre completo" required>
+      <input type="email" id="register-email" placeholder="Correo electrónico" required>
+      <input type="password" id="register-password" placeholder="Contraseña" required>
+      <button type="submit">Registrarme</button>
+      <p class="error" id="register-error"></p>
+    </form>
+
+    <p class="toggle" id="toggle-link">¿No tienes cuenta? Regístrate</p>
+  </div>
+
+  <script>
+    const toggleLink = document.getElementById('toggle-link');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const formTitle = document.getElementById('form-title');
+    const loginError = document.getElementById('login-error');
+    const registerError = document.getElementById('register-error');
+
+    toggleLink.addEventListener('click', () => {
+      loginForm.classList.toggle('hidden');
+      registerForm.classList.toggle('hidden');
+      formTitle.textContent = loginForm.classList.contains('hidden') ? 'Registro' : 'Iniciar Sesión';
+      toggleLink.textContent = loginForm.classList.contains('hidden')
+        ? '¿Ya tienes cuenta? Inicia sesión'
+        : '¿No tienes cuenta? Regístrate';
+      loginError.textContent = '';
+      registerError.textContent = '';
+    });
+
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('register-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+
+      if (!email || !password || !name) {
+        registerError.textContent = 'Por favor, llena todos los campos.';
+        return;
+      }
+
+      const user = { name, email, password };
+      localStorage.setItem('ghostUser', JSON.stringify(user));
+      alert('¡Registro exitoso! Ahora inicia sesión.');
+      toggleLink.click();
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const savedUser = JSON.parse(localStorage.getItem('ghostUser'));
+
+      if (!savedUser || savedUser.email !== email || savedUser.password !== password) {
+        loginError.textContent = 'Correo o contraseña incorrectos.';
+        return;
+      }
+
+      // Redirigir si todo está bien
+      window.location.href = "BTON2.html"; // CAMBIA por tu archivo real
+    });
+  </script>
+</body>
+</html>
+
+

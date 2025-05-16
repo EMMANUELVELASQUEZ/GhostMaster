@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Masterbus Wallet</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    margin: 0;
+    padding: 20px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .wallet {
+    background: linear-gradient(145deg, #1e2a38, #162129);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+    width: 350px;
+    padding: 30px;
+    position: relative;
+  }
+  .card {
+    background: linear-gradient(135deg, #4b79a1, #283e51);
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    margin-bottom: 25px;
+    position: relative;
+    color: #f0f4f8;
+  }
+  .card h2 {
+    margin: 0 0 10px;
+    font-weight: 700;
+    font-size: 24px;
+  }
+  .card-number {
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+  }
+  .card-holder {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+  .balance {
+    font-size: 28px;
+    font-weight: 700;
+    color: #00e676;
+    margin-bottom: 10px;
+  }
+  .recharge-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  input[type="number"] {
+    padding: 12px 15px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+  }
+  button.recharge-btn {
+    background: #00e676;
+    border: none;
+    color: #0a0a0a;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+  }
+  button.recharge-btn:hover {
+    background: #00c853;
+  }
+  .wallet-header {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 1.2px;
+    color: #81d4fa;
+  }
+  /* Masterbus logo (simple style) */
+  .masterbus-logo {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    font-weight: 900;
+    font-size: 26px;
+    color: #ffd600;
+    text-shadow: 0 0 6px #ffd600aa;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+  <div class="wallet">
+    <div class="wallet-header">Masterbus Wallet</div>
+    <div class="card">
+      <div class="masterbus-logo">MB</div>
+      <h2>Tarjeta Masterbus</h2>
+      <div class="card-number">**** **** **** 1234</div>
+      <div class="card-holder">Usuario: Emmanuel</div>
+    </div>
+    <div class="balance" id="balanceDisplay">$150.00 MXN</div>
+    <div class="recharge-section">
+      <input type="number" id="rechargeAmount" placeholder="Cantidad a recargar (MXN)" min="1" />
+      <button class="recharge-btn" onclick="recargar()">Recargar</button>
+    </div>
+  </div>
+
+<script>
+  // Saldo inicial
+  let saldo = 150.00;
+
+  const balanceDisplay = document.getElementById('balanceDisplay');
+  const rechargeInput = document.getElementById('rechargeAmount');
+
+  function actualizarSaldo() {
+    balanceDisplay.textContent = `$${saldo.toFixed(2)} MXN`;
+  }
+
+  function recargar() {
+    const cantidad = parseFloat(rechargeInput.value);
+    if (isNaN(cantidad) || cantidad <= 0) {
+      alert('Por favor, ingresa una cantidad válida para recargar.');
+      return;
+    }
+    saldo += cantidad;
+    actualizarSaldo();
+    rechargeInput.value = '';
+    alert(`¡Recarga exitosa! Nuevo saldo: $${saldo.toFixed(2)} MXN`);
+  }
+
+  // Inicializar saldo en pantalla
+  actualizarSaldo();
+</script>
+</body>
+</html>

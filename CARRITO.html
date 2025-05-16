@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carrito Movible Chido</title>
+<style>
+  /* Reset básico */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    user-select: none;
+  }
+  /* Contenedor general */
+  #carrito {
+    position: fixed;
+    top: 10vh;
+    left: 10vw;
+    width: 350px;
+    max-height: 80vh;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    cursor: grab;
+    display: flex;
+    flex-direction: column;
+  }
+  #carrito.grabbing {
+    cursor: grabbing;
+  }
+
+  /* Header carrito */
+  #carrito header {
+    padding: 16px 20px;
+    background: linear-gradient(90deg, #1e90ff, #00bfff);
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    user-select: none;
+  }
+
+  /* Lista productos */
+  #productos {
+    flex-grow: 1;
+    padding: 12px 20px;
+  }
+
+  .producto {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 15px;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+  }
+  .producto:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .producto img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .detalle {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detalle .nombre {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    color: #222;
+  }
+
+  .detalle .precio {
+    color: #555;
+    font-weight: 600;
+  }
+
+  .cantidades {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cantidades button {
+    background: #1e90ff;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  .cantidades button:hover {
+    background: #0c70d0;
+  }
+  .cantidades span {
+    min-width: 22px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+  }
+
+  /* Total */
+  #total {
+    padding: 15px 20px;
+    border-top: 2px solid #eee;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #1e90ff;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="carrito">
+  <header>Tu Carrito 🛒</header>
+  <div id="productos">
+    <!-- Productos se generan con JS -->
+  </div>
+  <div id="total">Total: $0.00</div>
+</div>
+
+<script>
+  const productos = [
+    { id: 1, nombre: "Zapatillas Urbanas", precio: 899.99, img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=60&q=80", cantidad: 1 },
+    { id: 2, nombre: "Camiseta Casual", precio: 349.50, img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=60&q=80", cantidad: 2 },
+    { id: 3, nombre: "Reloj Deportivo", precio: 1299.99, img: "https://images.unsplash.com/photo-1519741491625-c5d4de2d1be4?auto=format&fit=crop&w=60&q=80", cantidad: 1 }
+  ];
+
+  const productosContainer = document.getElementById('productos');
+  const totalDisplay = document.getElementById('total');
+
+  function renderizarProductos() {
+    productosContainer.innerHTML = '';
+    productos.forEach(producto => {
+      const div = document.createElement('div');
+      div.classList.add('producto');
+      div.innerHTML = `
+        <img src="${producto.img}" alt="${producto.nombre}" />
+        <div class="detalle">
+          <div class="nombre">${producto.nombre}</div>
+          <div class="precio">$${producto.precio.toFixed(2)}</div>
+        </div>
+        <div class="cantidades">
+          <button data-id="${producto.id}" class="btn-restar">−</button>
+          <span>${producto.cantidad}</span>
+          <button data-id="${producto.id}" class="btn-sumar">+</button>
+        </div>
+      `;
+      productosContainer.appendChild(div);
+    });
+    actualizarTotal();
+    agregarEventos();
+  }
+
+  function actualizarTotal() {
+    const total = productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
+    totalDisplay.textContent = `Total: $${total.toFixed(2)}`;
+  }
+
+  function agregarEventos() {
+    document.querySelectorAll('.btn-sumar').forEach(btn => {
+      btn.onclick = () => {
+        const id = parseInt(btn.dataset.id);
+        const producto = productos.find(p => p.id === id);
+        producto.cantidad++;
+        renderizarProductos();
+      };
+    });
+    document.querySelectorAll('.btn-restar').forEach(btn => {
+      btn.onclick = () => {
+        const id = parseInt(btn.dataset.id);
+        const producto = productos.find(p => p.id === id);
+        if(producto.cantidad > 1){
+          producto.cantidad--;
+        }
+        renderizarProductos();
+      };
+    });
+  }
+
+  // Drag and drop carrito
+  const carrito = document.getElementById('carrito');
+  let isDragging = false, startX, startY, origX, origY;
+
+  carrito.addEventListener('mousedown', e => {
+    if(e.target.tagName === 'BUTTON') return; // No arrastrar si se clickea un botón
+    isDragging = true;
+    carrito.classList.add('grabbing');
+    startX = e.clientX;
+    startY = e.clientY;
+    const rect = carrito.getBoundingClientRect();
+    origX = rect.left;
+    origY = rect.top;
+    e.preventDefault();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if(isDragging){
+      isDragging = false;
+      carrito.classList.remove('grabbing');
+    }
+  });
+
+  window.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    carrito.style.left = (origX + dx) + 'px';
+    carrito.style.top = (origY + dy) + 'px';
+  });
+
+  // Renderizamos productos al cargar
+  renderizarProductos();
+</script>
+
+</body>
+</html>
+
