@@ -1,6 +1,7 @@
 # GhostMaster
 Sitio web de venta de boletos con una nueva implementacion de innovacion gracias a su nuevo modelo de juegos.
 <h1 align="center">🚌💥 GhostMaster: La Nueva Era del Transporte en Veracruz 🎮🔥</h1>
+<img src="https://github.com/user-attachments/assets/9c32f671-d8f5-43b2-98a4-17522aaa0726" />
 
 <p align="center">
   Plataforma web + juego interactivo = 🚀 viajes con estilo + 🎁 recompensas reales
